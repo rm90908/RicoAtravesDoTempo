@@ -84,6 +84,9 @@ public class Universo : MonoBehaviour
         string currentSceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentSceneName);
     }
+    public void Vitoria(){
+        SceneManager.LoadScene(1);
+    }
     public void Sair(){
         Application.Quit();
         #if UNITY_EDITOR
