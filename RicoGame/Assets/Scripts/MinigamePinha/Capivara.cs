@@ -10,12 +10,13 @@ public class Capivara : MonoBehaviour
 
     public Universo universo; 
     public bool PodeMover;
-    
+
     [SerializeField]
     float impulso;
-    SpriteRenderer capivara;
 
     Rigidbody2D rig;
+
+    SpriteRenderer capivara;
     private SpriteRenderer spriteRenderer;
     public Sprite RicoVivo;
     public Sprite RicoMorto;
@@ -30,13 +31,7 @@ public class Capivara : MonoBehaviour
         PodeMover = true;
         rig=GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-
         spriteRenderer.sprite = RicoVivo;
-    }
-    // Update is called once per frame
-    void Update()
-    {
-    
     }
     public void Parar(){
         PodeMover = false;
@@ -48,8 +43,7 @@ public class Capivara : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Pinha"))
         {
-                universo.Addpontos();
-            
+            universo.Addpontos();
         }
         if (collision.gameObject.CompareTag("Bigorna"))
         {
@@ -68,7 +62,6 @@ public class Capivara : MonoBehaviour
                 StartCoroutine(Cura());
                 Universo universo = objetoUniverso.GetComponent<Universo>();
                 universo.Cura();
-                Debug.Log("colidiu com coracao");
             }
         }
     }
@@ -113,26 +106,17 @@ public class Capivara : MonoBehaviour
                 transform.position = PosicaoCentro;
             }
         }
-        else{
-            Debug.Log("não pode se mover");
-        }
     }
     public void Esquerda(){
         if ( PodeMover == true){
             capivara.flipX=false;
             transform.position = PosicaoEsquerda;
         }
-        else{
-            Debug.Log("não pode se mover");
-        }
     }
     public void Direita(){
         if (PodeMover == true){
             capivara.flipX=true;
             transform.position = PosicaoDireita;
-        }
-        else{
-            Debug.Log("não pode se mover");
         }
     }
 }

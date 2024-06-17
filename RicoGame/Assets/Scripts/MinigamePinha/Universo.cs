@@ -129,13 +129,8 @@ public class Universo : MonoBehaviour
     {
         if( vidas <= 2){
             vidas++;
-            Debug.Log("Pode Curar");
             txtVidas.text = vidas.ToString(); 
         }
-        else{
-            Debug.Log("Não pode curar");
-        }
-        
     }
     IEnumerator GeracaoComida()
     {
@@ -156,7 +151,7 @@ public class Universo : MonoBehaviour
                 Instantiate(Coracao, new Vector3( posicaoaleatoria, 6 ,0),Quaternion.identity);
                 break;
                 default:
-                Debug.Log("Não spawnou algo. Spawn= "+ Spawn );
+                Debug.Log("Nao spawnou algo. Spawn= "+ Spawn );
                 break;
             }
             yield return new WaitForSeconds(SpawnRate);
