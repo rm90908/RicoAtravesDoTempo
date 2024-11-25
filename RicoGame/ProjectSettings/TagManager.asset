@@ -9,6 +9,15 @@ TagManager:
   - Pinha
   - Chao
   - Capivara
+  - Fundo
+  - Monstros
+  - SpawnObstacle
+  - SpawnCollectible
+  - SpawnPowerUp
+  - PowerUp1
+  - Spring
+  - Obstacle
+  - TopObstacle
   layers:
   - Default
   - TransparentFX
@@ -43,6 +52,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: fundo2
+    uniqueID: 33656223
+    locked: 0
   - name: fundo
     uniqueID: 461603749
     locked: 0

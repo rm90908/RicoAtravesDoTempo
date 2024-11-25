@@ -2,22 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 public class Universo : MonoBehaviour
 {
     [SerializeField]
-    private GameObject Pinha, Bigorna, Coracao, Inicia, Pause, Morreu, Ganhou, Perdeu;
+    private GameObject Pinha, Bigorna, Coracao, Inicia, Pause, Morreu, Ganhou, Perdeu, Scoreboard, ScoreboardSave;
     private float escalaRandom;
     float[] possivelposicao = {-1.75f, 0f, 1.75f};
     int[] Spawnobjeto = {1, 2, 3, 4, 5, 6, 7, 8};
     public float SpawnRate;
-    public int pontos, vidas;
+    public int pontos, vidas, metaPoints;
     public bool Pausado, PodeSpawn;
     public Capivara capivara;
     public Temporizador temporizador;
+    public SoundControllerPinha soundPinha;
     public TMP_Text txtPontos, txtVidas;
     bool umavez = true;
+    public ControlScenes controlScenes;
+    public ScoreboardControl scoreboardControl;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,12 +29,20 @@ public class Universo : MonoBehaviour
         vidas = 3; 
         txtPontos.text = pontos.ToString();
         txtVidas.text = vidas.ToString();
-        
+
+        //procura o controlador de cena
+        ControlScenes ScenesController = FindObjectOfType<ControlScenes>();
+        if (ScenesController != null){controlScenes = ScenesController.GetComponent<ControlScenes>();}
+        //else {Debug.LogError("Objeto indestrutível não encontrado!");}
+        Inicia.SetActive(true);
+        Scoreboard.SetActive(true);
+        ScoreboardSave.SetActive(false);
     }
     // Update is called once per frame
     void Update()
     {
         if ( vidas == 0 && umavez){
+            soundPinha.PlaySound(2);
             PodeSpawn = false;
             capivara.Morreu();
             umavez=false;
@@ -40,22 +50,27 @@ public class Universo : MonoBehaviour
             temporizador.Parar();
         }
         //Debug.Log("jogo esta acontecendo");
-
     }
     IEnumerator Faleceu()
     {
         yield return new WaitForSeconds(3f);
         Morreu.SetActive(true);
+        Scoreboard.SetActive(true);
+        scoreboardControl.UpdateScoreText();
+        ScoreboardSave.SetActive(true);
     }
     public void Tempofim()
     {
         PodeSpawn = false;
-        if (pontos >= 30){
+        if (pontos >= metaPoints){
             Ganhou.SetActive(true);
         }
         else{
             Perdeu.SetActive(true);
         }
+        Scoreboard.SetActive(true);
+        scoreboardControl.UpdateScoreText();
+        ScoreboardSave.SetActive(true);
     }
     public void TempoPadrao()
     {
@@ -73,6 +88,8 @@ public class Universo : MonoBehaviour
         temporizador.Comeca();
         capivara.Reviveu();
         Inicia.SetActive(false);
+        Scoreboard.SetActive(false);
+        ScoreboardSave.SetActive(false);
         pontos = 0;
         vidas = 3; 
         PodeSpawn = true;
@@ -81,17 +98,16 @@ public class Universo : MonoBehaviour
         umavez=true;
     }
     public void Recomeca(){
-        string currentSceneName = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(currentSceneName);
+        controlScenes.RestartGame();
     }
     public void Vitoria(){
-        SceneManager.LoadScene(1);
+        controlScenes.ChangeScene(2);
     }
     public void Sair(){
-        Application.Quit();
-        #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-        #endif
+        controlScenes.QuitGame();
+    }
+    public void VoltarMenu(){
+        controlScenes.ReturnHome();
     }
     public void Pausa(){
         if(!Pausado){
@@ -100,10 +116,12 @@ public class Universo : MonoBehaviour
             Time.timeScale=0f;
             Pausado =true;
             Pause.SetActive(true);
+            Scoreboard.SetActive(true);
         }
         else
         {
             Pause.SetActive(false);
+            Scoreboard.SetActive(false);
             temporizador.Voltar();
             capivara.Voltar();
             Time.timeScale=1f;
@@ -112,6 +130,7 @@ public class Universo : MonoBehaviour
     }
     public void Addpontos()
     {
+        soundPinha.PlaySound(0);
         pontos = pontos + 1;
         txtPontos.text = pontos.ToString();
     }
@@ -125,11 +144,13 @@ public class Universo : MonoBehaviour
             temporizador.Dano();
             vidas = vidas - 1;
             txtVidas.text = vidas.ToString();
+            soundPinha.PlaySound(1);
             break;
         }
     }
     public void Cura()
     {
+        soundPinha.PlaySound(3);
         if( vidas <= 2){
             vidas++;
             txtVidas.text = vidas.ToString(); 
@@ -152,9 +173,6 @@ public class Universo : MonoBehaviour
                 break;
                 case >=8:
                 Instantiate(Coracao, new Vector3( posicaoaleatoria, 6 ,0),Quaternion.identity);
-                break;
-                default:
-                Debug.Log("Nao spawnou algo. Spawn= "+ Spawn );
                 break;
             }
             yield return new WaitForSeconds(SpawnRate);

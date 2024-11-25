@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class Temporizador : MonoBehaviour
 {
-    public float timeRemaining = 10;
+    public float timeRemaining = 120;
     public bool timerIsRunning = false;
     public TMP_Text timeText;
     
@@ -22,7 +22,7 @@ public class Temporizador : MonoBehaviour
     }
     public void Comeca(){
         timerIsRunning = true;
-        timeRemaining = 120;
+        //timeRemaining = 120;
     }
     public void Parar(){
         timerIsRunning = false;

@@ -24,7 +24,9 @@ public class Capivara : MonoBehaviour
     public Color corDano = Color.red;
     public Color corNormal = Color.white;
     public Color corCura = Color.green;
-    // Start is called before the first frame update
+
+    public int pose;
+    
     void Start()
     {
         capivara = GetComponent<SpriteRenderer>();
@@ -32,6 +34,55 @@ public class Capivara : MonoBehaviour
         rig=GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = RicoVivo;
+        pose = 1;
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            AAA();
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            BBB();
+        }
+        if (Input.GetKeyDown(KeyCode.J)){
+            Esquerda();
+        }
+        if (Input.GetKeyDown(KeyCode.K)){
+            Centro();
+        }
+        if (Input.GetKeyDown(KeyCode.L)){
+            Direita();
+        }
+    }
+    public void AAA()
+    {
+        if (pose == 1)
+        {
+            Esquerda();
+            pose = 0;
+        }
+        if (pose == 2)
+        {
+            Centro();
+            pose = 1;
+        }
+    }
+    public void BBB()
+    {
+        if (pose == 1)
+        {
+            Direita();
+            pose = 2;
+            //Debug.Log($"pose = "+ pose);
+        }
+        if (pose == 0)
+        {
+            Centro();
+            pose = 1;
+            //Debug.Log($"pose = "+ pose);
+        }
     }
     public void Parar(){
         PodeMover = false;
@@ -50,7 +101,7 @@ public class Capivara : MonoBehaviour
             GameObject objetoUniverso = GameObject.Find("Universo");
             if (objetoUniverso != null)
             {
-                StartCoroutine(Dano());
+                StartCoroutine(DanoNumerator());
                 Universo universo = objetoUniverso.GetComponent<Universo>();
                 universo.Dano();
             }
@@ -65,11 +116,12 @@ public class Capivara : MonoBehaviour
             }
         }
     }
-    IEnumerator Dano()
+    IEnumerator DanoNumerator()
     {
         spriteRenderer.color = corDano;
         yield return new WaitForSeconds(0.2f);
         spriteRenderer.color = corNormal;
+
     }
     IEnumerator Cura()
     {
